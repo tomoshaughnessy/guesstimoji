@@ -19,10 +19,19 @@ const JOINDATA_TYPES = {
     roomID: 'string',
 };
 
+const RESTARTDATA_TYPES = {
+    // it's a BAD idea to send objects in objects over the server
+    board: 'object',
+    roomID: 'string',
+}
+
 const PICKDATA_TYPES = {
     pick: 'string',
     player: 'number',
 };
+
+// we don't need to send anything to reset a game
+const RESETDATA_TYPES = {};
 
 const TURNDATA_TYPES = {
     message: 'string',
@@ -40,7 +49,9 @@ module.exports = {
     ROOMHASHTABLE_MAX_ENTRIES,
     SERVER_TIMEOUT,
     JOINDATA_TYPES,
+    RESTARTDATA_TYPES,
     PICKDATA_TYPES,
+    RESETDATA_TYPES,
     TURNDATA_TYPES,
     INDEX_TYPE,
 };

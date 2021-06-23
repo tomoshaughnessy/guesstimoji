@@ -20,6 +20,8 @@ export const roomReducer = (
         roomFull: false,
         board: [],
         randomSmiley: '😎',
+        restartable: false,
+        allPlayersReady: false,
     },
     action
 ) => {
@@ -30,10 +32,21 @@ export const roomReducer = (
                 randomSmiley: action.payload,
             };
         case 'room/roomJoined':
-            console.log('new state update game', {
+            return {
                 ...state,
                 ...action.payload,
-            });
+            };
+        case 'room/roomRestartable':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'room/roomRestarted':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'room/allPlayersBecameReady':
             return {
                 ...state,
                 ...action.payload,
@@ -44,7 +57,6 @@ export const roomReducer = (
 };
 
 export const roomJoined = (joinData) => {
-    console.log('roomJoined -> joinData', joinData);
     return {
         type: 'room/roomJoined',
         payload: joinData,
@@ -55,5 +67,26 @@ export const homePageLoaded = (emoji) => {
     return {
         type: 'homePageLoaded',
         payload: emoji,
+    };
+};
+
+export const roomRestartable = () => {
+    return {
+        type: 'room/roomRestartable',
+        payload: { restartable: true },
+    };
+};
+
+export const roomRestarted = () => {
+    return {
+        type: 'room/roomRestarted',
+        payload: { restartable: false, winner: undefined, allPlayersReady: false },
+    };
+};
+
+export const allPlayersBecameReady = () => {
+    return {
+        type: 'room/allPlayersBecameReady',
+        payload: { allPlayersReady: true },
     };
 };

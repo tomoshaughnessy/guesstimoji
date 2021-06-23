@@ -8,12 +8,7 @@ import Footer from './footer';
 import './index.css';
 import { connect } from 'react-redux';
 import { homePageLoaded, roomJoined } from './redux/roomSlice';
-import {
-    getBoards,
-    getEmojis,
-    addGetEmojiResponseAsBoard,
-    graphQlPost,
-} from './apiUtils';
+import { getBoards, getEmojis } from './apiUtils';
 import { gotBoards } from './redux/boardsSlice';
 import { gotRooms } from './redux/roomsSlice';
 // view layer
@@ -32,10 +27,7 @@ const App = ({
     useEffect(() => {
         getBoards('{getBoards{emojis}}')
             .then((res) => res.map((x) => x.emojis))
-            .then((boards) => {
-                console.log('gotBoards');
-                gotBoards(boards);
-            })
+            .then(gotBoards)
             .catch((err) => console.error(err));
         getEmojis({ group: 'Smileys & Emotion' })
             .then((array) => array.map((x) => x.emoji))
@@ -47,22 +39,12 @@ const App = ({
                 console.error(err);
             });
         socket.emit('client:rooms/roomsRequested');
-        socket.on('server:rooms/roomsResponded', (rooms) => {
-            console.log('rooms responded');
-            gotRooms(rooms);
-        });
+        socket.on('server:rooms/roomsResponded', gotRooms);
+        
+        return () => socket.off('server:rooms/roomsResponded', gotRooms);
     }, []);
-    /*
-  // add boards
-  useEffect(() => {
-    getEmojis({ group: "Animals & Nature" }).then((arr) => addGetEmojiResponseAsBoard(arr)).then((str) => graphQlPost(str));
-  }, []);
-  */
-    useEffect(() => {
-        console.log('QUERY TEST:', getEmojis({ group: 'Animals & Nature' }));
-    }, []);
+
     const handleJoin = (joinData) => {
-        console.log('handleJoin -> joinData', joinData);
         socket.emit('client:room/roomJoined', joinData);
         socket.on('server:room/roomJoined', (joinData) => {
             if (joinData) {
@@ -72,6 +54,7 @@ const App = ({
             }
         });
     };
+
     return (
         <div className="App" align="center">
             {

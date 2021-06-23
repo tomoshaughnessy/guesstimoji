@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
     return (
-        <nav role="navigation" class="nav-table">
+        <nav role="navigation" className="nav-table">
             <ul>
                 <li>
                     <a

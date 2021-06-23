@@ -1,0 +1,28 @@
+/*
+    We want the UI elements in gameplay to be consistent,
+    so we style all of them here. However, it might be
+    reasonable for the gameplay UI to look slightly different
+    from the rest of the app.
+*/
+
+
+.golden-button {
+    background-color: white;
+    border: #fcc21b;
+    border-style: solid;
+    outline: thin;
+    border-width: thin;
+    padding: 1px 10px;
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    transition: 0.3s;
+}
+
+.golden-button:focus {
+    background-color: #fcc21b;
+}
+
+.golden-button:hover {
+    background-color: #fcc21b;
+}

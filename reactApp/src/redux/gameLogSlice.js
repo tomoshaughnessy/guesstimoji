@@ -1,7 +1,8 @@
 export const gameLogReducer = (state = [], action) => {
-    console.log('in gameLog reducer');
     switch (action.type) {
         case 'gameLog/cleared':
+            return [];
+        case 'gameLog/gameRestarted':
             return [];
         case 'gameLog/turnSubmitted':
             return [action.payload, ...state];
@@ -15,6 +16,10 @@ export const gameLogReducer = (state = [], action) => {
 export const turnSubmitted = (turnData) => ({
     type: 'gameLog/turnSubmitted',
     payload: turnData,
+});
+
+export const gameRestarted = () => ({
+    type: 'gameLog/gameRestarted',
 });
 
 export const cleared = () => ({

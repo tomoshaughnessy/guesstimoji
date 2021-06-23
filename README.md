@@ -165,6 +165,17 @@ in both the `gameApi` and `graphQlApi` directories, run:
 nodemon server
 ```
 
+The backend uses the following environment variables:
+
+- `MONGODB_HOST_NAME`
+    - This is the host name of the mongodb server.
+    - For example, it may be `mongo` or `localhost`.
+    - It defaults to `mongo`.
+- `MONGODB_DB_NAME`:
+    - This is the name of the mongodb database we use.
+    - For example, it might be `guesstimoji`.
+    - It defaults to `guesstimoji`.
+
 ### Deployment
 
 The website and APIs are served with `.service` unit files in the `/etc/systemd/system` directory. The website is served with this:

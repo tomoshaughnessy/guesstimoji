@@ -28,7 +28,8 @@ input {
     margin: 5px;
 }
 
-#board-select-button {
+#board-select-button,
+.nice-button {
     background-color: white;
     border: #fcc21b;
     border-style: solid;
@@ -41,11 +42,13 @@ input {
     transition: 0.3s;
 }
 
-#board-select-button:focus {
+#board-select-button:focus,
+.nice-button:focus {
     background-color: #fcc21b;
 }
 
-#board-select-button:hover {
+#board-select-button:hover,
+.nice-button:hover {
     background-color: #fcc21b;
 }
 

@@ -3,10 +3,8 @@ import TurnHandler from './TurnHandler';
 import { connect, useDispatch } from 'react-redux';
 import { turnSubmitted } from '../redux/gameLogSlice';
 
-const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
+const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayersReady }) => {
     const opponent = (player % 2) + 1;
-    console.log('GameLog -> player', player);
-    console.log('GameLog -> opponent', opponent);
     const dispatch = useDispatch();
 
     const handleSubmitTurn = (untrimmedMessage) => {
@@ -24,7 +22,7 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
         // don't use curly brace tuples that don't have tags!!
         return gameLog.map(({ username: username, message: message }, i) => (
             <div
-                class={i === 0 ? 'game-log-last-message' : 'game-log-message'}
+                className={i === 0 ? 'game-log-last-message' : 'game-log-message'}
                 key={i}
             >
                 <span>{username + ':'}</span>
@@ -42,8 +40,9 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
                 roomFull={roomFull}
                 handleSubmitTurn={handleSubmitTurn}
                 winner={winner}
+                allPlayersReady={allPlayersReady}
             />
-            <div class="game-log-box">{renderGameLog()}</div>
+            <div className="game-log-box">{renderGameLog()}</div>
         </div>
     );
 };

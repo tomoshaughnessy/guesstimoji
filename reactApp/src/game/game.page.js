@@ -7,7 +7,8 @@ import queryString from 'query-string';
 import socket from '../socketlocal';
 import '../index.css';
 import { connect, useDispatch } from 'react-redux';
-import { turnSubmitted, cleared } from '../redux/gameLogSlice';
+import { allPlayersBecameReady, roomRestartable } from '../redux/roomSlice';
+import { turnSubmitted, cleared, gameRestarted } from '../redux/gameLogSlice';
 import { clicked } from '../redux/opponentBoardSlice';
 //import socket from '../../socket';
 
@@ -30,6 +31,9 @@ const GamePage = ({
     player,
     gameCount,
     winner,
+    roomRestartable,
+    allPlayersBecameReady,
+    allPlayersReady,
 }) => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -42,28 +46,32 @@ const GamePage = ({
             });
         } else {
             socket.off('server:gameLog/turnSubmitted');
+            socket.off('server:gameLog/restartGame');
             socket.off('server:opponentBoard/clicked');
         }
     }, [roomFull]);
     useEffect(() => {
-        socket.on('server:gameLog/cleared', () => {
-            dispatch(cleared());
-        });
+        const update = () => dispatch(cleared());
+        socket.on('server:gameLog/cleared', update);
+        return socket.off('server:gameLog/cleared', update);
     }, []);
+
+    useEffect(() => {
+        if (winner) {
+            dispatch(roomRestartable());
+        }
+    
+    }, [winner]);
+
+    useEffect(() => {
+        const update = () => dispatch(allPlayersBecameReady());
+        socket.on('server:room/allPlayersBecameReady', update);
+        return () => socket.off('server:room/allPlayersBecameReady', update);
+    });
 
     // make sure that you check to see if you can import socket
     // or have to pass it as prop
     // the empty array tells useEffect to only run once
-
-    // state changes in a useEffect could cause an inf loop
-    /*
-  useEffect(() => {
-    if(socket.room !== roomQuery ){
-      socket.emit("subscribe", roomQuery);
-      console.log(`Subscribed to ${socket.room} in useEffect`);
-    }
-  });
-  */
 
     // the component will be mounted if the player number is found
     return (
@@ -83,6 +91,7 @@ const GamePage = ({
                     roomFull={roomFull}
                     player={player}
                     winner={winner}
+                    allPlayersReady={allPlayersReady}
                 />
                 {
                     // Need 'Leave Room' button
@@ -121,6 +130,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     turnSubmitted,
     cleared,
+    roomRestartable,
+    allPlayersBecameReady,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

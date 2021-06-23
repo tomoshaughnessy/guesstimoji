@@ -12,6 +12,7 @@ const TurnHandler = ({
     roomFull,
     handleSubmitTurn,
     winner,
+    allPlayersReady,
 }) => {
     // turn 1/2 is answering yes or no
     // turn 2/2 is asking a question
@@ -39,6 +40,8 @@ const TurnHandler = ({
         return <div>Waiting for Player 2 to join...</div>;
     } else if (!picked) {
         return <div></div>;
+    } else if (!allPlayersReady) {
+        return <div>Waiting for opponent to select emoji...</div>
     } else {
         return playerTurn ? (
             <PlayerTurn

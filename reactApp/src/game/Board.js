@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Square from './Square';
 import Choice from './PickTextBox';
-import { connect } from 'react-redux';
-import { playerPicked } from '../redux/playersSlice';
+import { connect, useDispatch } from 'react-redux';
+import { playerPicked, playerReset } from '../redux/playersSlice';
+import { gameRestarted } from '../redux/gameLogSlice';
+import { roomRestarted } from '../redux/roomSlice';
+import './game.css';
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
 // and access gamedata hashtable with that
-const Board = ({ socket, board, player, picked, playerPicked }) => {
+const Board = ({ socket, board, player, picked, playerPicked, playerReset, restartable }) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
     // THE INITIAL VALUE OF STATE WILL BE ASSIGNED ONLY
     // ON THE INITIAL RENDER
     // IN SUBSEQUENT RENDERS, THE ARGUMENT OF USESTATE
     // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
     // RETRIEVED
+
     const [pick, setPick] = useState('');
+    const dispatch = useDispatch();
 
     // with 2 boards, there is no reason to listen on the player's board
     //socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
@@ -31,6 +36,31 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
         playerPicked();
         setPick(board[i]);
     };
+
+    const handleGameRestart = () => {
+        // saves typing this.state.
+        // can only change board if 2 players in room
+        // will need some 'original player' condition if I
+        // allow players to spectate
+        socket.emit('client:players/reset', {});
+        setPick('');
+        playerReset();
+        gameRestarted({});
+        dispatch(gameRestarted({}));
+        dispatch(roomRestarted());
+    };
+
+    useEffect(() => {
+        const update = () => {
+            setPick('');
+            playerReset();
+            gameRestarted({});
+            dispatch(gameRestarted({}));
+            dispatch(roomRestarted());
+        };
+        socket.on('server:players/reset', update);
+        return () => socket.off('server:players/reset', update);
+    })
     // this is a white space char, not a space
     // a space causes shifting of rows
 
@@ -65,9 +95,10 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
             />
         );
     };
+    
     return (
         <div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(0)}
                 {renderSquare(1)}
                 {renderSquare(2)}
@@ -76,7 +107,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(5)}
                 {renderSquare(6)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(7)}
                 {renderSquare(8)}
                 {renderSquare(9)}
@@ -85,7 +116,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(12)}
                 {renderSquare(13)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(14)}
                 {renderSquare(15)}
                 {renderSquare(16)}
@@ -94,7 +125,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(19)}
                 {renderSquare(20)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(21)}
                 {renderSquare(22)}
                 {renderSquare(23)}
@@ -103,7 +134,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(26)}
                 {renderSquare(27)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(28)}
                 {renderSquare(29)}
                 {renderSquare(30)}
@@ -112,19 +143,29 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(33)}
                 {renderSquare(34)}
             </div>
-            <div class="text-row">
+            <div className="text-row">
                 <Choice pick={pick} />
             </div>
+            {
+                restartable ?
+                    <button className="golden-button" onClick={handleGameRestart}>RESTART GAME</button>
+                :
+                    <div></div>
+            }
         </div>
     );
 };
 
 const mapStateToProps = (state) => ({
+    roomID: state.roomID,
     picked: state.player,
+
+    restartable: state.room.restartable,
 });
 
 const mapDispatchToProps = {
     playerPicked,
+    playerReset,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

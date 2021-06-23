@@ -12,3 +12,7 @@ export const playerReducer = (state = false, action) => {
 export const playerPicked = () => ({
     type: 'player/picked',
 });
+
+export const playerReset = () => ({
+    type: 'player/reset',
+});

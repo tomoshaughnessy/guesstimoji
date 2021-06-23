@@ -12,8 +12,8 @@ const OpponentBoard = ({ socket, board, show }) => {
         return <OpponentSquare index={i} value={show[i] ? board[i] : '█'} />;
     };
     return (
-        <div class="board">
-            <div class="board-row">
+        <div className="board">
+            <div className="board-row">
                 {renderSquare(28)}
                 {renderSquare(29)}
                 {renderSquare(30)}
@@ -22,7 +22,7 @@ const OpponentBoard = ({ socket, board, show }) => {
                 {renderSquare(33)}
                 {renderSquare(34)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(21)}
                 {renderSquare(22)}
                 {renderSquare(23)}
@@ -31,7 +31,7 @@ const OpponentBoard = ({ socket, board, show }) => {
                 {renderSquare(26)}
                 {renderSquare(27)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(14)}
                 {renderSquare(15)}
                 {renderSquare(16)}
@@ -40,7 +40,7 @@ const OpponentBoard = ({ socket, board, show }) => {
                 {renderSquare(19)}
                 {renderSquare(20)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(7)}
                 {renderSquare(8)}
                 {renderSquare(9)}
@@ -49,7 +49,7 @@ const OpponentBoard = ({ socket, board, show }) => {
                 {renderSquare(12)}
                 {renderSquare(13)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(0)}
                 {renderSquare(1)}
                 {renderSquare(2)}

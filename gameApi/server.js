@@ -345,14 +345,15 @@ io.sockets.on('connection', (socket) => {
                     game,
                 }))(roomHashTable[roomID]);
                 /* const record = {
-           _id: gameID,
-           roomID: roomID,
-           winner: winner,
-           board: board,
-           players: players,
-           gameLog: gameLog,
-           game: game,
-         };*/
+                    _id: gameID,
+                    roomID: roomID,
+                    winner: winner,
+                    board: board,
+                    players: players,
+                    gameLog: gameLog,
+                    game: game,
+                    };
+                */
                 //insertRecordIntoCollection(record, "games");
                 // if it is gameOver, log game
                 io.in(roomID).emit('server:room/roomJoined', {
@@ -380,7 +381,20 @@ io.sockets.on('connection', (socket) => {
             const { pick, player } = pickData;
             // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
             roomHashTable[roomID].players[player].pick = pick;
+            if (roomHashTable[roomID].players[1].pick && roomHashTable[roomID].players[2].pick) {
+                io.in(roomID).emit('server:room/allPlayersBecameReady', {});
+            }
             console.log(roomHashTable[roomID].players[player]);
+        });
+        socket.on('client:players/reset', (resetData) => {
+            console.log('Trying to reset', resetData);
+            if (!validateObject(resetData, utils.RESETDATA_TYPES)) {
+                return;
+            }
+            // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
+            delete roomHashTable[roomID].players[2].pick;
+            delete roomHashTable[roomID].players[1].pick;
+            socket.to(roomID).emit('server:players/reset', resetData);
         });
         socket.on('client:opponentBoard/clicked', (unflooredIndex) => {
             const index = Math.floor(unflooredIndex);

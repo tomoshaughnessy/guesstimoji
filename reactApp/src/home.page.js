@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import HomePageDiv from './HomePageDiv';
-import { getEmojis } from './apiUtils';
 // boards is a map where the key is name
 // it returns an object of {data, preview}
 import './index.css';
